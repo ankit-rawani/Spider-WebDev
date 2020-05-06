@@ -131,13 +131,13 @@ var bubbleArray = []
 
 var pos, vel, r, dr;
 
-for(let i=0; i<5; i++){
-    r = 30
+for(let i=0; i<20; i++){
+    r = 50
     dr = 0.1
     x = randomIn(r + 1, can.width - r)
     y = randomIn(r + 1, can.height - r)
-    vx = randomIn(-2, 2)
-    vy = randomIn(-2, 2)
+    vx = randomIn(-5, 5)
+    vy = randomIn(-5, 5)
 
     pos = new Vector(x,y)
     vel = new Vector(vx,vy)
