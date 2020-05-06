@@ -10,6 +10,23 @@ window.addEventListener('resize', e => {
 
 })
 
+window.addEventListener('click', function (e) { 
+    var mouse = new Vector(e.x, e.y)
+    let i=0
+    bubbleArray.forEach(bub=>{
+
+        if(distance(mouse, bub.position) <= bub.radius){
+            bubbleArray.splice(i,1)
+        }
+        i++
+    })
+    console.log(e)
+})
+
+function distance(pos1,pos2){
+    return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y))
+}
+
 function detectCollision(p1, p2, rad){
     let dist = Math.sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y))
 
@@ -85,7 +102,7 @@ function Bubble(position, velocity, radius, dr){
                 )
                 if(detectCollision(this.position, bub.position, this.radius)){
                     if (dotProduct(del_p,del_v)>=0) {
-                        console.log(true)
+                        //console.log(true)
                         let phi = -Math.atan((bub.position.y - this.position.y) / (bub.position.x - this.position.x))
 
                         this.velocity = rotate(this.velocity, phi)
@@ -114,13 +131,13 @@ var bubbleArray = []
 
 var pos, vel, r, dr;
 
-for(let i=0; i<40; i++){
+for(let i=0; i<5; i++){
     r = 30
     dr = 0.1
     x = randomIn(r + 1, can.width - r)
     y = randomIn(r + 1, can.height - r)
-    vx = randomIn(-5, 5)
-    vy = randomIn(-5, 5)
+    vx = randomIn(-2, 2)
+    vy = randomIn(-2, 2)
 
     pos = new Vector(x,y)
     vel = new Vector(vx,vy)
@@ -128,11 +145,11 @@ for(let i=0; i<40; i++){
 
     if(i!=0){
         for(let j=0; j<bubbleArray.length; j++){
-            console.log(true)
+            //console.log(true)
             if (detectCollision(bubbleArray[j].position, pos, r)) {
                 pos.x = randomIn(r + 1, can.width - r)
                 pos.y = randomIn(r + 1, can.height - r)
-                console.log(true)
+               // console.log(true)
 
                 j=-1;
             }
@@ -144,7 +161,7 @@ for(let i=0; i<40; i++){
     bubbleArray.push(new Bubble(pos, vel, r, dr))
 }
 
-console.log(bubbleArray)
+//console.log(bubbleArray)
 
 function animate(){
     window.requestAnimationFrame(animate)
