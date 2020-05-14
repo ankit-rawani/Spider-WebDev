@@ -4,10 +4,29 @@ const back = document.querySelector('#back')
 const pause = document.querySelector('#pause')
 const play = document.querySelector('#play')
 const replay = document.querySelector('#replay')
+const menu = document.querySelector('#menu')
+const closeMenu = document.querySelector('#closeMenu')
+
 var ctx = can.getContext("2d")
+var high = localStorage[0]
+var score = 0
 
 can.height = window.innerHeight
 can.width = window.innerWidth
+
+nav.style.display = "none"
+
+menu.addEventListener('click', e=>{
+    menu.style.display = "none"
+    nav.style.display = "block"
+    pauseGame()
+})
+
+closeMenu.addEventListener('click', e => {
+    menu.style.display = "block"
+    nav.style.display = "none"
+    playGame()
+})
 
 window.addEventListener('resize', e => {
     can.height = window.innerHeight
@@ -22,10 +41,12 @@ window.addEventListener('click', function (e) {
 
         if(distance(mouse, bub.position) <= bub.radius){
             bubbleArray.splice(i,1)
+            score++
+            
         }
         i++
     })
-    console.log(e)
+    console.log(score)
 })
 
 function distance(pos1,pos2){
@@ -179,6 +200,9 @@ function animate(){
         window.cancelAnimationFrame(AnimationFrame)
         clearInterval(window.ab)
         console.log("done")
+        if(high<score){
+            localStorage[0] = score
+        }
         return
     }
 
@@ -239,7 +263,13 @@ function playGame(e) {
 }
 
 function replayGame(e) {
+    console.log(score)
     bubbleArray = []
+    if (high < score) {
+        localStorage.setItem('high', score)
+    }
+    score = 0
+    high = localStorage[0]
     ctx.clearRect(0, 0, can.width, can.height)
     window.cancelAnimationFrame(AnimationFrame)
     clearInterval(window.ab)

@@ -7,12 +7,20 @@ body{
 }
 
 nav{
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0,0,0,0.8);
+    width: 100%;
+    position: absolute;
+    z-index: 5;
+}
+
+#menu {
+    position: absolute;
+    z-index: 8;
 }
 
 nav > div, nav a {
     display: inline-block;
-    margin: 1% 2%;
+    margin: 0.5% 2%;
     vertical-align: middle;
    
 }
@@ -20,6 +28,10 @@ nav > div, nav a {
 nav a {
     font-weight: 700;
     font-size: 5vh;
-    color: white;
+    color: black;
+    padding-left: 2%;
+    padding-right: 2%;
+    border-radius: 1vw;
     text-decoration: none;
+    background-color: white;
 }
