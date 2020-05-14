@@ -8,7 +8,9 @@ const menu = document.querySelector('#menu')
 const closeMenu = document.querySelector('#closeMenu')
 
 var ctx = can.getContext("2d")
-var high = localStorage[0]
+localStorage.clear()
+localStorage.setItem("high", "0")
+var high = localStorage["high"]
 var score = 0
 
 can.height = window.innerHeight
@@ -263,6 +265,8 @@ function playGame(e) {
 }
 
 function replayGame(e) {
+    menu.style.display = "block"
+    nav.style.display = "none"
     console.log(score)
     bubbleArray = []
     if (high < score) {
