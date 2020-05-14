@@ -1,4 +1,9 @@
 const can = document.querySelector('canvas')
+const nav = document.querySelector('nav')
+const back = document.querySelector('#back')
+const pause = document.querySelector('#pause')
+const play = document.querySelector('#play')
+const replay = document.querySelector('#replay')
 var ctx = can.getContext("2d")
 
 can.height = window.innerHeight
@@ -129,48 +134,138 @@ function Bubble(position, velocity, radius, dr){
 var bubbleArray = []
 
 
-var pos, vel, r, dr;
+var pos, vel, r=30, dr=0.1
 
-for(let i=0; i<20; i++){
-    r = 50
-    dr = 0.1
+// for(let i=0; i<5; i++){
+    
+// }
+
+var time = 1000
+window.ab = setInterval(function(){
     x = randomIn(r + 1, can.width - r)
     y = randomIn(r + 1, can.height - r)
     vx = randomIn(-5, 5)
     vy = randomIn(-5, 5)
 
-    pos = new Vector(x,y)
-    vel = new Vector(vx,vy)
-    
+    pos = new Vector(x, y)
+    vel = new Vector(vx, vy)
 
-    if(i!=0){
-        for(let j=0; j<bubbleArray.length; j++){
+    
+        for (let j = 0; j < bubbleArray.length; j++) {
             //console.log(true)
             if (detectCollision(bubbleArray[j].position, pos, r)) {
                 pos.x = randomIn(r + 1, can.width - r)
                 pos.y = randomIn(r + 1, can.height - r)
-               // console.log(true)
+                // console.log(true)
 
-                j=-1;
+                j = -1;
             }
         }
-    }
 
-   
-    
     bubbleArray.push(new Bubble(pos, vel, r, dr))
-}
+    
+}, time)
 
-//console.log(bubbleArray)
+
+
+//to prevent the page from crashing setting limit to be half the maximum number to bubbles that can be accomodated
+var max_bubbles = Math.floor(0.5*((innerHeight * innerWidth)/(Math.PI*r*r)))
+console.log(max_bubbles)
+
+var AnimationFrame
 
 function animate(){
-    window.requestAnimationFrame(animate)
+    if (bubbleArray.length >= max_bubbles) {
+        window.cancelAnimationFrame(AnimationFrame)
+        clearInterval(window.ab)
+        console.log("done")
+        return
+    }
+
     ctx.clearRect(0, 0, can.width, can.height)
 
-    
-    bubbleArray.forEach(b=>{
+    bubbleArray.forEach(b => {
         b.rebound()
     })
+
+    AnimationFrame = window.requestAnimationFrame(animate)
+
 }
 
 animate()
+
+
+var gamePlayState = true
+pause.addEventListener('click', pauseGame)
+play.addEventListener('click', playGame)
+replay.addEventListener('click', replayGame)
+
+function pauseGame(e) {
+    gamePlayState = false
+    window.cancelAnimationFrame(AnimationFrame)
+    clearInterval(window.ab)
+}
+
+function playGame(e) {
+    if(!gamePlayState){
+        gamePlayState = true
+        animate()
+        window.ab = setInterval(function () {
+        x = randomIn(r + 1, can.width - r)
+        y = randomIn(r + 1, can.height - r)
+        vx = randomIn(-5, 5)
+        vy = randomIn(-5, 5)
+
+        pos = new Vector(x, y)
+        vel = new Vector(vx, vy)
+
+
+        for (let j = 0; j < bubbleArray.length; j++) {
+            //console.log(true)
+            if (detectCollision(bubbleArray[j].position, pos, r)) {
+                pos.x = randomIn(r + 1, can.width - r)
+                pos.y = randomIn(r + 1, can.height - r)
+                // console.log(true)
+
+                j = -1;
+            }
+        }
+
+        bubbleArray.push(new Bubble(pos, vel, r, dr))
+
+        }, time)
+    }
+        
+}
+
+function replayGame(e) {
+    bubbleArray = []
+    ctx.clearRect(0, 0, can.width, can.height)
+    window.cancelAnimationFrame(AnimationFrame)
+    clearInterval(window.ab)
+    animate()
+    window.ab = setInterval(function () {
+        x = randomIn(r + 1, can.width - r)
+        y = randomIn(r + 1, can.height - r)
+        vx = randomIn(-2, 2)
+        vy = randomIn(-2, 2)
+
+        pos = new Vector(x, y)
+        vel = new Vector(vx, vy)
+
+
+        for (let j = 0; j < bubbleArray.length; j++) {
+            //console.log(true)
+            if (detectCollision(bubbleArray[j].position, pos, r)) {
+                pos.x = randomIn(r + 1, can.width - r)
+                pos.y = randomIn(r + 1, can.height - r)
+                // console.log(true)
+
+                j = -1;
+            }
+        }
+
+        bubbleArray.push(new Bubble(pos, vel, r, dr))
+
+    }, time)
+}
