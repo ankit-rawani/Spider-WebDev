@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High score</title>
+    <link rel="stylesheet" href="../css/high.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div id="root">
+        <a id="back" href="../index.html"><div>BACK</div></a>
+        <div id="high">HIGH SCORES</div>
+    </div>
+    <div id="scoreboard"></div>
+    <script>
+        const score = document.querySelector("#scoreboard")
+        var n = localStorage.length
+        var high, i=0
+        var names = []
+
+        function func(a,b){
+            if(localStorage[a]<localStorage[b]){
+                return 1
+            }
+            else{
+                return -1
+            }
+        }
+
+        while (i<n) {
+            high = localStorage.key(i)
+            names.push(high)
+            i++
+        }
+        names.sort(func)
+        i=0
+        while (i<n) {
+            var item = document.createElement("div")
+            item.textContent = names[i]+" : "+localStorage[names[i]]
+            score.appendChild(item)
+            i++
+        }
+        
+    </script>
+</body>
+</html>

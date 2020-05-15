@@ -9,9 +9,12 @@ const timer = document.querySelector('#time')
 const closeMenu = document.querySelector('#closeMenu')
 const scoreBoard = document.querySelector("#score")
 
+var playerName = prompt("Enter your name")
 var ctx = can.getContext("2d")
-localStorage.setItem("high", "0")
-var high = localStorage["high"]
+if(localStorage[playerName]==undefined){
+    localStorage.setItem(playerName, 0)
+}
+var high = localStorage[playerName]
 var score = 0
 
 can.height = window.innerHeight
@@ -220,7 +223,7 @@ function animate(){
         // console.log("done")
         if(high<score){
             localStorage.clear()
-            localStorage.setItem("high",score)
+            localStorage.setItem(playerName,score)
         }
         return
     }
@@ -281,7 +284,7 @@ function replayGame(e) {
     bubbleArray = []
     if (high < score) {
         localStorage.clear()
-        localStorage.setItem('high', score)
+        localStorage.setItem(playerName, score)
     }
     score = 0
     high = localStorage[0]
