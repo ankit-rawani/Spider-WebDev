@@ -7,8 +7,14 @@ body{
     width: 100vw;
 }
 
-#high {
-    color: rgb(255, 225, 56);
+a{
+    text-decoration: none;
+    color: white;
+    font-weight: 700;
+}
+
+#about {
+    color: rgb(255, 251, 0);
     font-size: 10vh;
     font-weight: 700;
     text-align: center;
@@ -29,13 +35,21 @@ body{
     background-color: white;
 }
 
-#scoreboard{
+#text{
     width: 40%;
     color: white;
-    font-size: 5vh;
+    font-size: 3vh;
     font-weight: 600;
-    text-align: center;
-    height: 60vh;
+    padding: 4%;
+    height: 40vh;
     margin: 1vh auto;
     background-color: rgba(0, 0, 0, 0.5);
+}
+
+#contact{
+    margin-top: 5%;
+    font-size: 2.5vh;
+    font-weight: 400;
+    text-decoration: none;
+    color: white;
 }
