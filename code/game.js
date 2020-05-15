@@ -212,11 +212,15 @@ function startTimer(){
     }
 }
 
+var gameEnded = false
+
 function animate(){
 
     startTimer()
     
     if (t==0) {
+        gameEnded = true
+        timer.textContent = "GAME OVER!!!"
         window.cancelAnimationFrame(AnimationFrame)
         ctx.clearRect(0, 0, can.width, can.height)
         clearInterval(window.ab)
@@ -265,7 +269,7 @@ function pauseGame(e) {
 }
 
 function playGame(e) {
-    if(!gamePlayState){
+    if(!gamePlayState && !gameEnded){
         gamePlayState = true
         animate()
         window.addEventListener('click', burst)
@@ -275,6 +279,9 @@ function playGame(e) {
 }
 
 function replayGame(e) {
+    timer.textContent = ""
+    gamePlayState = true
+    gameEnded = false
     time = 2000
     timePassed = 0
     t = 10
