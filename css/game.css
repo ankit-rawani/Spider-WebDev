@@ -27,11 +27,33 @@ nav > div, nav a {
 
 nav a {
     font-weight: 700;
-    font-size: 5vh;
+    font-size: 4vh;
     color: black;
-    padding-left: 2%;
-    padding-right: 2%;
-    border-radius: 1vw;
+    padding-left: 1%;
+    padding-right: 1%;
+    border-radius: 1vh;
     text-decoration: none;
     background-color: white;
+}
+
+#time {
+    position: absolute;
+    left: 70px;
+    top: 6px;
+    font-weight: 700;
+    z-index: 10;
+    font-size: 5vh;
+    color: red;
+}
+
+#score {
+    display: block;
+    text-align: right;
+    position: absolute;
+    top: 0.3vh;
+    left: 97vw;
+    font-weight: 700;
+    z-index: 10;
+    font-size: 5vh;
+    color: white;
 }

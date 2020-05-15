@@ -5,10 +5,11 @@ const pause = document.querySelector('#pause')
 const play = document.querySelector('#play')
 const replay = document.querySelector('#replay')
 const menu = document.querySelector('#menu')
+const timer = document.querySelector('#time')
 const closeMenu = document.querySelector('#closeMenu')
+const scoreBoard = document.querySelector("#score")
 
 var ctx = can.getContext("2d")
-localStorage.clear()
 localStorage.setItem("high", "0")
 var high = localStorage["high"]
 var score = 0
@@ -36,20 +37,22 @@ window.addEventListener('resize', e => {
 
 })
 
-window.addEventListener('click', function (e) { 
-    var mouse = new Vector(e.x, e.y)
-    let i=0
-    bubbleArray.forEach(bub=>{
+window.addEventListener('click', burst)
 
-        if(distance(mouse, bub.position) <= bub.radius){
-            bubbleArray.splice(i,1)
+function burst(e) {
+    var mouse = new Vector(e.x, e.y)
+    let i = 0
+    bubbleArray.forEach(bub => {
+
+        if (distance(mouse, bub.position) <= bub.radius) {
+            bubbleArray.splice(i, 1)
             score++
-            
+
         }
         i++
     })
     console.log(score)
-})
+}
 
 function distance(pos1,pos2){
     return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y))
@@ -159,12 +162,11 @@ var bubbleArray = []
 
 var pos, vel, r=30, dr=0.1
 
-// for(let i=0; i<5; i++){
-    
-// }
 
-var time = 1000
-window.ab = setInterval(function(){
+var time = 2000
+window.ab = setInterval(genBubble, time)
+
+function genBubble() {
     x = randomIn(r + 1, can.width - r)
     y = randomIn(r + 1, can.height - r)
     vx = randomIn(-5, 5)
@@ -173,46 +175,72 @@ window.ab = setInterval(function(){
     pos = new Vector(x, y)
     vel = new Vector(vx, vy)
 
-    
-        for (let j = 0; j < bubbleArray.length; j++) {
-            //console.log(true)
-            if (detectCollision(bubbleArray[j].position, pos, r)) {
-                pos.x = randomIn(r + 1, can.width - r)
-                pos.y = randomIn(r + 1, can.height - r)
-                // console.log(true)
 
-                j = -1;
-            }
+    for (let j = 0; j < bubbleArray.length; j++) {
+        //console.log(true)
+        if (detectCollision(bubbleArray[j].position, pos, r)) {
+            pos.x = randomIn(r + 1, can.width - r)
+            pos.y = randomIn(r + 1, can.height - r)
+            // console.log(true)
+
+            j = -1;
         }
+    }
 
     bubbleArray.push(new Bubble(pos, vel, r, dr))
-    
-}, time)
+
+}
 
 
 
-//to prevent the page from crashing setting limit to be half the maximum number to bubbles that can be accomodated
-var max_bubbles = Math.floor(0.5*((innerHeight * innerWidth)/(Math.PI*r*r)))
-console.log(max_bubbles)
+//to prevent the page from crashing setting limit to be 60% 0f the maximum number to bubbles that can be accomodated
+var max_bubbles = 0.6*Math.floor(((innerHeight * innerWidth)/(Math.PI*r*r)))
+// console.log(max_bubbles)
 
-var AnimationFrame
+var AnimationFrame, timePassed = 0, t = 10
+
+function startTimer(){
+    if (bubbleArray.length >= 0.75 * max_bubbles) {
+        if(timePassed%60 ==0){
+            t--
+        }
+    // console.log(t)
+    timer.textContent = t
+    }
+}
 
 function animate(){
-    if (bubbleArray.length >= max_bubbles) {
+
+    startTimer()
+    
+    if (t==0) {
         window.cancelAnimationFrame(AnimationFrame)
+        ctx.clearRect(0, 0, can.width, can.height)
         clearInterval(window.ab)
-        console.log("done")
+        // console.log("done")
         if(high<score){
-            localStorage[0] = score
+            localStorage.clear()
+            localStorage.setItem("high",score)
         }
         return
     }
+
+    scoreBoard.textContent = ""+score
 
     ctx.clearRect(0, 0, can.width, can.height)
 
     bubbleArray.forEach(b => {
         b.rebound()
     })
+
+    if(timePassed%150 == 0 && time > 500){
+        clearInterval(window.ab)
+        time = time - 50
+        // console.log(time)
+        window.ab = setInterval(genBubble, time)
+    }
+
+    timePassed++
 
     AnimationFrame = window.requestAnimationFrame(animate)
 
@@ -228,6 +256,7 @@ replay.addEventListener('click', replayGame)
 
 function pauseGame(e) {
     gamePlayState = false
+    window.removeEventListener('click', burst)
     window.cancelAnimationFrame(AnimationFrame)
     clearInterval(window.ab)
 }
@@ -236,40 +265,22 @@ function playGame(e) {
     if(!gamePlayState){
         gamePlayState = true
         animate()
-        window.ab = setInterval(function () {
-        x = randomIn(r + 1, can.width - r)
-        y = randomIn(r + 1, can.height - r)
-        vx = randomIn(-5, 5)
-        vy = randomIn(-5, 5)
-
-        pos = new Vector(x, y)
-        vel = new Vector(vx, vy)
-
-
-        for (let j = 0; j < bubbleArray.length; j++) {
-            //console.log(true)
-            if (detectCollision(bubbleArray[j].position, pos, r)) {
-                pos.x = randomIn(r + 1, can.width - r)
-                pos.y = randomIn(r + 1, can.height - r)
-                // console.log(true)
-
-                j = -1;
-            }
-        }
-
-        bubbleArray.push(new Bubble(pos, vel, r, dr))
-
-        }, time)
+        window.addEventListener('click', burst)
+        window.ab = setInterval(genBubble, time)
     }
         
 }
 
 function replayGame(e) {
+    time = 2000
+    timePassed = 0
+    t = 10
     menu.style.display = "block"
     nav.style.display = "none"
     console.log(score)
     bubbleArray = []
     if (high < score) {
+        localStorage.clear()
         localStorage.setItem('high', score)
     }
     score = 0
@@ -277,29 +288,7 @@ function replayGame(e) {
     ctx.clearRect(0, 0, can.width, can.height)
     window.cancelAnimationFrame(AnimationFrame)
     clearInterval(window.ab)
+    window.ab = setInterval(genBubble, time)
     animate()
-    window.ab = setInterval(function () {
-        x = randomIn(r + 1, can.width - r)
-        y = randomIn(r + 1, can.height - r)
-        vx = randomIn(-2, 2)
-        vy = randomIn(-2, 2)
-
-        pos = new Vector(x, y)
-        vel = new Vector(vx, vy)
-
-
-        for (let j = 0; j < bubbleArray.length; j++) {
-            //console.log(true)
-            if (detectCollision(bubbleArray[j].position, pos, r)) {
-                pos.x = randomIn(r + 1, can.width - r)
-                pos.y = randomIn(r + 1, can.height - r)
-                // console.log(true)
-
-                j = -1;
-            }
-        }
-
-        bubbleArray.push(new Bubble(pos, vel, r, dr))
-
-    }, time)
+    
 }
