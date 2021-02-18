@@ -40,21 +40,39 @@ window.addEventListener('resize', e => {
 
 })
 
-window.addEventListener('click', burst)
+window.addEventListener('click', burst);
+
+var burstTime; 
+
+function removeFromBubbleArray(){
+    let i = 0
+    bubbleArray.forEach(bub => {
+        if(bub.shouldExpand){
+            bubbleArray.splice(i, 1);
+            console.log('burst');
+        }
+        i++;
+    })
+
+    clearTimeout(burstTime);
+}
 
 function burst(e) {
-    var mouse = new Vector(e.x, e.y)
+    let mouse = new Vector(e.x, e.y)
     let i = 0
     bubbleArray.forEach(bub => {
 
         if (distance(mouse, bub.position) <= bub.radius) {
-            bubbleArray.splice(i, 1)
+            bub.shouldExpand = true;
+            burstTime = setTimeout(removeFromBubbleArray, 100)
+            
             score++
 
         }
         i++
     })
     console.log(score)
+    mouse = new Vector(-100, -100) //reseting the mouse click position
 }
 
 function distance(pos1,pos2){
@@ -93,6 +111,7 @@ function Bubble(position, velocity, radius, dr){
     this.velocity = velocity
     this.radius = radius
     this.dr = dr
+    this.shouldExpand = false
 
     this.draw = function(){
         ctx.beginPath()
@@ -163,7 +182,7 @@ function Bubble(position, velocity, radius, dr){
 var bubbleArray = []
 
 
-var pos, vel, r=30, dr=0.1
+var pos, vel, r=30, dr=2;
 
 
 var time = 2000
@@ -238,6 +257,9 @@ function animate(){
 
     bubbleArray.forEach(b => {
         b.rebound()
+        if (b.shouldExpand == true) {
+            b.expand();
+        }
     })
 
     if(timePassed%150 == 0 && time > 500){

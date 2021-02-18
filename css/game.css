@@ -4,6 +4,7 @@ body{
     background-color: #555555;
     text-decoration: none;
     font-family: 'Open-sans', sans-serif;
+    overflow: hidden;
 }
 
 nav{
